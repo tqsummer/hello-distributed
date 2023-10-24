@@ -1,0 +1,13 @@
+server:
+  port: 8181
+
+spring:
+  application:
+    name: hello-redis
+  cloud:
+    nacos:
+      server-addr: 10.0.0.130:8848
+      discovery:
+        username: nacos
+        password: nacos
+        namespace: public
