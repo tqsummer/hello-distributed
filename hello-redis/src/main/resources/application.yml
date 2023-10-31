@@ -4,10 +4,19 @@ server:
 spring:
   application:
     name: hello-redis
-  cloud:
-    nacos:
-      server-addr: 10.0.0.130:8848
-      discovery:
-        username: nacos
-        password: nacos
-        namespace: public
+  redis:
+    database: 0
+    timeout: 3000
+    password: foobar-pass
+    # 哨兵模式
+    #    sentinel:
+    #      nodes: 192.168.31.121:26379,192.168.31.121:26380,192.168.31.121:26381
+    #      master: mymaster
+    cluster:
+      nodes: 192.168.31.131:6401,192.168.31.131:6404,192.168.31.132:6402,192.168.31.132:6405,192.168.31.133:6403,192.168.31.133:6406
+    lettuce:
+      pool:
+        max-idle: 50
+        min-idle: 10
+        max-active: 100
+        max-wait: 1000
