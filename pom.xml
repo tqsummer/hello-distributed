@@ -11,6 +11,8 @@
 
     <modules>
         <module>hello-redis</module>
+        <module>hello-rocketmq</module>
+        <module>hello-rocketmq/hello-rocketmq-api</module>
     </modules>
 
     <properties>
