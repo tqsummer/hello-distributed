@@ -6,11 +6,12 @@
         <artifactId>hello-distributed</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>hello-rocketmq</artifactId>
-    <name>hello-rocketmq</name>
-    <description>Hello Rocketmq</description>
+    <artifactId>hello-mybatis</artifactId>
+    <name>hello-mybatis</name>
+    <description>Hello Mybatis</description>
     <packaging>pom</packaging>
+
     <modules>
-        <module>hello-rocketmq-api</module>
+        <module>hello-mybatis-generator</module>
     </modules>
 </project>

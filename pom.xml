@@ -12,7 +12,8 @@
     <modules>
         <module>hello-redis</module>
         <module>hello-rocketmq</module>
-        <module>hello-rocketmq/hello-rocketmq-api</module>
+        <module>hello-elasticsearch</module>
+        <module>hello-mybatis</module>
     </modules>
 
     <properties>
