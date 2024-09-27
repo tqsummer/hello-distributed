@@ -3,4 +3,5 @@ server:
 
 spring:
   application:
-    name: hello-mybatis-generator
+    name: hello-mybatis-demo
+    

@@ -23,6 +23,7 @@ public class CodeGenerator {
                 "mysql", "12345678")
                 .build();
 
+
         // 全局配置
         GlobalConfig globalConfig = new GlobalConfig.Builder()
                 .author("fangxiagnqian")
@@ -44,9 +45,13 @@ public class CodeGenerator {
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
                 .addInclude("oauth2_user", "oauth2_registered_client") // 添加您的表名
-                .entityBuilder().enableLombok()
-                .controllerBuilder().enableRestStyle()
-                .mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+                .entityBuilder()
+                .enableLombok()
+                .controllerBuilder()
+                .enableHyphenStyle()
+                .enableRestStyle()
+                .mapperBuilder()
+                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
                 .build(); // 调用 build() 方法创建 StrategyConfig 对象
 
         // 模板配置
