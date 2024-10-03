@@ -1,0 +1,16 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.study.hello.distributed.mybatis</groupId>
+        <artifactId>hello-mybatis-uc</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>hello-mybatis-uc-api</artifactId>
+    <name>hello-mybatis-uc-api</name>
+    <description>Hello Mybatis User Center Api</description>
+    <packaging>jar</packaging>
+    <dependencies>
+    </dependencies>
+
+</project>

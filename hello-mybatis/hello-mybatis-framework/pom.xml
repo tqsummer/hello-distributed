@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.study.hello.distributed</groupId>
+        <artifactId>hello-mybatis</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <groupId>com.study.hello.distributed.mybatis</groupId>
+    <artifactId>hello-mybatis-framework</artifactId>
+    <name>hello-mybatis-framework</name>
+    <description>Hello Mybatis Framework</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>hello-mybatis-framework-commons</module>
+        <module>hello-mybatis-framework-core</module>
+    </modules>
+</project>

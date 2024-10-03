@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.31.3:20041/ljz_grky_dev?useSSL=false&serverTimezone=Asia/Shanghai
+    username: mysql
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.study.hello.distributed.mybatis.demo.entity
+# 可以添加其他测试特定的配置
+logging:
+  level:
+    root: INFO
+    com.study.hello.distributed.mybatis.demo: DEBUG
