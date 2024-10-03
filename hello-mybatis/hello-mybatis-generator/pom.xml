@@ -50,7 +50,11 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.study.hello.distributed.mybatis</groupId>
+            <artifactId>hello-mybatis-framework-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

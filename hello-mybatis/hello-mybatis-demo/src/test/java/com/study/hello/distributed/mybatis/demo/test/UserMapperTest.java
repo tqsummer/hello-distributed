@@ -1,6 +1,5 @@
 package com.study.hello.distributed.mybatis.demo.test;
 
-import com.study.hello.distributed.mybatis.demo.HelloMybatisDemoApplication;
 import com.study.hello.distributed.mybatis.demo.entity.User;
 import com.study.hello.distributed.mybatis.demo.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 // 测试类
-@SpringBootTest(classes = HelloMybatisDemoApplication.class)
+@SpringBootTest
 @ActiveProfiles("test")
 public class UserMapperTest {
     @Autowired
@@ -24,5 +23,7 @@ public class UserMapperTest {
         user.setRoles("admins");
         userMapper.insert(user);
     }
+
+
 }
 

@@ -56,12 +56,12 @@ public class CodeGenerator {
 
         // 模板配置
         TemplateConfig templateConfig = new TemplateConfig.Builder()
-                .entity("/templates/entity.java")
-                .service("/templates/app/service.java")
-                .serviceImpl("/templates/app/serviceImpl.java")
-                .mapper("/templates/infrastructure/mapper.java")
-                .xml("/templates/mapper.xml")
-                .controller("/templates/adapter/controller.java")
+                .entity("/templates/common/entity.java")
+                .service("/templates/common/app/service.java")
+                .serviceImpl("/templates/common/app/serviceImpl.java")
+                .mapper("/templates/common/infrastructure/mapper.java")
+                .xml("/templates/common/mapper.xml")
+                .controller("/templates/common/adapter/controller.java")
                 .build();
 
         // 注入配置
@@ -70,9 +70,9 @@ public class CodeGenerator {
                     System.out.println("TableInfo: " + tableInfo.getName());
                     System.out.println("ObjectMap: " + objectMap);
                 })
-                .customFile(new CustomFile.Builder().packageName("client.api").fileName("Api.java").templatePath("/templates/client/api.java.ftl").build())
-                .customFile(new CustomFile.Builder().packageName("client.dto").fileName("DTO.java").templatePath("/templates/client/dto.java.ftl").build())
-                .customFile(new CustomFile.Builder().packageName("infrastructure.repository").fileName("Repository.java").templatePath("/templates/infrastructure/repository.java.ftl").build())
+                .customFile(new CustomFile.Builder().packageName("client.api").fileName("Api.java").templatePath("/templates/common/client/api.java.ftl").build())
+                .customFile(new CustomFile.Builder().packageName("client.dto").fileName("DTO.java").templatePath("/templates/common/client/dto.java.ftl").build())
+                .customFile(new CustomFile.Builder().packageName("infrastructure.repository").fileName("Repository.java").templatePath("/templates/common/infrastructure/repository.java.ftl").build())
                 .build();
 
         // 创建代码生成器实例并执行
