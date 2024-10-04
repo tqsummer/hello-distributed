@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.study.hello.distributed.mybatis.apiserver.entity.MemberPo;
 import com.study.hello.distributed.mybatis.apiserver.mapper.MemberMapper;
+import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
 import com.study.hello.distributed.mybatis.framework.commons.util.JsonUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,11 +73,13 @@ public class MemberMapperTest {
 
     @Test
     public void testQueryPage1() {
-        PageRequest pageRequest = PageRequest.of(1, 10, Sort.by(Sort.Order.asc("nickName")));
+        PageRequest pageRequest = PageRequest.of(1, 3, Sort.by(Sort.Order.asc("nickName")));
         Page<MemberPo> page = convertToMybatisPlusPage(pageRequest);
 
         IPage<MemberPo> iPage = memberMapper.selectPage(page, null);
         System.out.println(JsonUtils.toJsonString(iPage));
+        ApiPage<MemberPo> apiPage = ApiPage.to(iPage);
+        System.out.println(JsonUtils.toJsonString(apiPage));
     }
 
     private Page<MemberPo> convertToMybatisPlusPage(PageRequest pageRequest) {

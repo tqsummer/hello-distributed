@@ -3,8 +3,6 @@ package com.study.hello.distributed.mybatis.framework.commons.api;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.study.hello.distributed.mybatis.framework.commons.api.page.ApiOrderItem;
-import com.study.hello.distributed.mybatis.framework.commons.api.page.IApiPage;
-import com.study.hello.distributed.mybatis.framework.commons.util.JsonUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -12,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @ApiModel
 @NoArgsConstructor
 @JsonPropertyOrder({"pageNumber", "pageSize", "pageCount", "totalCount", "prev", "next", "records"})
-public class ApiPage<T> extends ApiObject implements IApiPage<T> {
+public class ApiPage<T> extends ApiObject {
     private static final long serialVersionUID = 1L;
 
     private List<T> records = Collections.emptyList();
@@ -55,47 +54,6 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
 
 
     /**
-     * 将 IPage 对象转换为 ApiPage 对象
-     *
-     * @param <A>
-     * @param <B>
-     * @param page
-     * @param func
-     * @return
-     */
-    public static <A, B> ApiPage<B> to(IApiPage<A> page, Function<A, B> func) {
-        ApiPage<B> api = new ApiPage<>();
-        api.setRecords(page.getRecords().stream().map(func).collect(Collectors.toList()));
-        return getPage(page, api);
-    }
-
-    /**
-     * 将 IPage 对象转换为 ApiPage 对象
-     *
-     * @param <A>
-     * @param <B>
-     * @param page
-     * @param typeClass
-     * @return
-     */
-    public static <A, B> ApiPage<B> to(IApiPage<A> page, Class<B> typeClass) {
-        ApiPage<B> api = new ApiPage<>();
-        api.setRecords(page.getRecords().stream().map(record -> JsonUtils.convertValue(record, typeClass)).collect(Collectors.toList()));
-        return getPage(page, api);
-    }
-
-    private static <A, B> ApiPage<B> getPage(IApiPage<A> page, ApiPage<B> api) {
-        api.setCurrent(page.getCurrent());
-        api.setSize(page.getSize());
-        api.setPages(page.getPages());
-        api.setOptimizeCountSql(page.optimizeCountSql());
-        api.setOrders(page.orders());
-        api.setTotal(page.getTotal());
-        api.setSearchCount(page.searchCount());
-        return api;
-    }
-
-    /**
      * @param <E>
      * @return 返回一个懒查询分页
      */
@@ -110,6 +68,49 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
         }
         return api;
     }
+
+    public static <T, S> ApiPage<T> to(S source) {
+        ApiPage<T> apiPage = new ApiPage<>();
+        try {
+            Method getRecordsMethod = source.getClass().getMethod("getRecords");
+            Method getTotalMethod = source.getClass().getMethod("getTotal");
+            Method getSizeMethod = source.getClass().getMethod("getSize");
+            Method getCurrentMethod = source.getClass().getMethod("getCurrent");
+            Method getPagesMethod = source.getClass().getMethod("getPages");
+            Method optimizeCountSqlMethod = source.getClass().getMethod("optimizeCountSql");
+            Method getOrdersMethod = source.getClass().getMethod("orders");
+            Method searchCountMethod = source.getClass().getMethod("searchCount");
+
+            //noinspection unchecked
+            apiPage.setRecords((List<T>) getRecordsMethod.invoke(source));
+            apiPage.setTotal((Long) getTotalMethod.invoke(source));
+            apiPage.setSize((Long) getSizeMethod.invoke(source));
+            apiPage.setCurrent((Long) getCurrentMethod.invoke(source));
+            apiPage.setPages((Long) getPagesMethod.invoke(source));
+            apiPage.setOptimizeCountSql((Boolean) optimizeCountSqlMethod.invoke(source));
+            //noinspection unchecked
+            apiPage.setOrders((List<ApiOrderItem>) getOrdersMethod.invoke(source));
+            apiPage.setSearchCount((Boolean) searchCountMethod.invoke(source));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create ApiPage from source object", e);
+        }
+        return apiPage;
+    }
+
+    public static <T1, T2, S> ApiPage<T2> to(S source, Function<T1, T2> func) {
+        ApiPage<T1> page = to(source);
+        ApiPage<T2> api = new ApiPage<>();
+        api.setCurrent(page.getCurrent());
+        api.setSize(page.getSize());
+        api.setPages(page.getPages());
+        api.setOptimizeCountSql(page.optimizeCountSql());
+        api.setOrders(page.orders());
+        api.setTotal(page.getTotal());
+        api.setSearchCount(page.searchCount());
+        api.setRecords(page.getRecords().stream().map(func).collect(Collectors.toList()));
+        return api;
+    }
+
 
     /**
      * @param <E>
@@ -195,7 +196,6 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
         // dummy
     }
 
-    @Override
     @ApiModelProperty(value = "记录列表", position = 70, required = true)
     public List<T> getRecords() {
         return this.records;
@@ -210,26 +210,29 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
     }
 
 
-    @Override
     public long getSize() {
         return this.size;
     }
 
 
-    @Override
     public long getCurrent() {
         return this.current;
     }
 
 
     @JsonIgnore
-    @Override // hide from swagger
     public long getPages() {
-        return IApiPage.super.getPages();
+        if (getSize() == 0) {
+            return 0L;
+        }
+        long pages = getTotal() / getSize();
+        if (getTotal() % getSize() != 0) {
+            pages++;
+        }
+        return pages;
     }
 
 
-    @Override
     public List<ApiOrderItem> orders() {
         return getOrders();
     }
@@ -242,12 +245,10 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
         this.orders = orders;
     }
 
-    @Override
     public boolean optimizeCountSql() {
         return optimizeCountSql;
     }
 
-    @Override
     @JsonIgnore
     public boolean searchCount() {
         return isSearchCount();
@@ -260,29 +261,26 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
         return searchCount;
     }
 
-    @Override
     public ApiPage<T> setSize(long size) {
         this.size = size;
         return this;
     }
 
-    @Override
     public ApiPage<T> setCurrent(long current) {
         this.current = current;
         return this;
     }
 
-    @Override
     public ApiPage<T> setRecords(List<T> records) {
         this.records = records;
         return this;
     }
 
-    @Override
     public ApiPage<T> setTotal(long total) {
         this.total = total;
         return this;
     }
+
 
     public ApiPage<T> addOrder(ApiOrderItem... items) {
         orders.addAll(Arrays.asList(items));
@@ -301,6 +299,11 @@ public class ApiPage<T> extends ApiObject implements IApiPage<T> {
 
     public ApiPage<T> setOptimizeCountSql(boolean optimizeCountSql) {
         this.optimizeCountSql = optimizeCountSql;
+        return this;
+    }
+
+    ApiPage<T> setPages(long pages) {
+        // to do nothing
         return this;
     }
 
