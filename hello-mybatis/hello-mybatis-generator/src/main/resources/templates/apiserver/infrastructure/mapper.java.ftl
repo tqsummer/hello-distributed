@@ -1,6 +1,6 @@
 package ${package.Mapper};
 
-import ${package.Entity}.${entity};
+import ${extPackage.Po}.${extTable.poName};
 import ${superMapperClassPackage};
 <#if mapperAnnotation>
 import org.apache.ibatis.annotations.Mapper;
@@ -18,9 +18,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 </#if>
 <#if kotlin>
-interface ${table.mapperName} : ${superMapperClass}<${entity}>
+interface ${table.mapperName} : ${superMapperClass}<${extTable.poName}>
 <#else>
-public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+public interface ${table.mapperName} extends ${superMapperClass}<${extTable.poName}> {
 
 }
 </#if>

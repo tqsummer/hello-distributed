@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.po.AbstractPo;
+import com.study.hello.distributed.mybatis.generator.ext.ExtTableInfo;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ApiServerCodeGenerator {
     public static void main(String[] args) {
@@ -56,6 +59,11 @@ public class ApiServerCodeGenerator {
                 .enableRestStyle()
                 .mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+                .formatMapperFileName("%sPoMapper")
+                .formatXmlFileName("%sPoMapper")
+                .serviceBuilder()
+                .formatServiceFileName("I%sPoService")
+                .formatServiceImplFileName("%sPoServiceImpl")
                 .build(); // 调用 build() 方法创建 StrategyConfig 对象
 
         // 模板配置
@@ -69,14 +77,21 @@ public class ApiServerCodeGenerator {
                 .build();
 
         // 注入配置
+        List<ExtTableInfo> extTableInfos = List.of(ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_PO).fileName("Po.java").packageName("infrastructure.po").templatePath("/templates/apiserver/infrastructure/po.java.ftl").superClass(AbstractPo.class));
+
         InjectionConfig injectionConfig = new InjectionConfig.Builder()
                 .beforeOutputFile((TableInfo tableInfo, Map<String, Object> objectMap) -> {
+                    extTableInfos.forEach(extTableInfo -> {
+                        extTableInfo.injection(tableInfo, objectMap);
+                    });
                     System.out.println("TableInfo: " + tableInfo.getName());
                     System.out.println("ObjectMap: " + objectMap);
+
                 })
+                .customFile(extTableInfos.stream().map(ExtTableInfo::getCustomFile).toList())
                 .customFile(new CustomFile.Builder().packageName("client.api").fileName("Api.java").templatePath("/templates/apiserver/client/api.java.ftl").build())
                 .customFile(new CustomFile.Builder().packageName("client.dto").fileName("DTO.java").templatePath("/templates/apiserver/client/dto.java.ftl").build())
-                //.customFile(new CustomFile.Builder().packageName("infrastructure.repository").fileName("Repository.java").templatePath("/templates/infrastructure/repository.java.ftl").build())
+                //.customFile(new CustomFile.Builder().packageName("infrastructure.repository").fileName("Repository.java").templatePath("/templates/apiserver/infrastructure/repository.java.ftl").build())
                 .build();
 
         // 创建代码生成器实例并执行
