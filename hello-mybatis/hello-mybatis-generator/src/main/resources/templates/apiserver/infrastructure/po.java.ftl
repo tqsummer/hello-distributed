@@ -3,6 +3,11 @@ package ${extPackage.Po};
 <#list table.importPackages as pkg>
 import ${pkg};
 </#list>
+<#if fieldAnnotationImportPackages??>
+<#list fieldAnnotationImportPackages as pkg>
+import ${pkg};
+</#list>
+</#if>
 <#if springdoc>
 import io.swagger.v3.oas.annotations.media.Schema;
 <#elseif swagger>
@@ -97,6 +102,11 @@ public class ${extTable.poName} {
     <#-- 逻辑删除注解 -->
     <#if field.logicDeleteField>
     @TableLogic
+    </#if>
+    <#if field.customMap?? && field.customMap.fieldAnnotationValues??>
+    <#list field.customMap.fieldAnnotationValues as fieldAnnotation>
+    ${fieldAnnotation}
+    </#list>
     </#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>

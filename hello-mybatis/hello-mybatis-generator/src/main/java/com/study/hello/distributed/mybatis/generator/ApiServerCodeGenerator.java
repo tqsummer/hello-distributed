@@ -1,16 +1,18 @@
 package com.study.hello.distributed.mybatis.generator;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.po.AbstractPo;
+import com.study.hello.distributed.mybatis.generator.ext.ExtDbColumnType;
+import com.study.hello.distributed.mybatis.generator.ext.ExtTableField;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableInfo;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ApiServerCodeGenerator {
@@ -54,6 +56,8 @@ public class ApiServerCodeGenerator {
                 .enableLombok()
                 .superClass(AbstractPo.class)
                 .addSuperEntityColumns("id", "create_time", "create_user_id", "create_user_name", "modify_time", "modify_user_id", "modify_user_name", "version", "deleted")
+                .logicDeleteColumnName("deleted")
+                .versionColumnName("version")
                 .controllerBuilder()
                 .enableHyphenStyle()
                 .enableRestStyle()
@@ -78,12 +82,13 @@ public class ApiServerCodeGenerator {
 
         // 注入配置
         List<ExtTableInfo> extTableInfos = List.of(ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_PO).fileName("Po.java").packageName("infrastructure.po").templatePath("/templates/apiserver/infrastructure/po.java.ftl").superClass(AbstractPo.class));
-
+        List<ExtTableField> extTableFields = List.of(ExtTableField.build("t_customer", "gender", ExtDbColumnType.Gender).addAnnotation(EnumValue.class, "@EnumValue"));
         InjectionConfig injectionConfig = new InjectionConfig.Builder()
                 .beforeOutputFile((TableInfo tableInfo, Map<String, Object> objectMap) -> {
                     extTableInfos.forEach(extTableInfo -> {
                         extTableInfo.injection(tableInfo, objectMap);
                     });
+                    tableInfo.getFields().forEach(tableField -> extTableFields.forEach(extTableField -> extTableField.injection(tableInfo, objectMap, tableField)));
                     System.out.println("TableInfo: " + tableInfo.getName());
                     System.out.println("ObjectMap: " + objectMap);
 
