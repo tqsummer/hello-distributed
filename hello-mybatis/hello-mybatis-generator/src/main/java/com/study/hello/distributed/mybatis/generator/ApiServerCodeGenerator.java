@@ -9,11 +9,15 @@ import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiResult;
 import com.study.hello.distributed.mybatis.framework.commons.api.dto.AbstractReqDto;
 import com.study.hello.distributed.mybatis.framework.commons.api.dto.AbstractResDto;
+import com.study.hello.distributed.mybatis.framework.commons.util.ApiUtils;
+import com.study.hello.distributed.mybatis.framework.commons.util.JsonUtils;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.mapper.AbstractMapper;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.po.AbstractPo;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.service.IPoService;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.service.PoServiceImpl;
+import com.study.hello.distributed.mybatis.framework.core.mybatis.util.WrapperUtils;
 import com.study.hello.distributed.mybatis.generator.ext.ExtDbColumnType;
+import com.study.hello.distributed.mybatis.generator.ext.ExtSysTableInfo;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableField;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableInfo;
 import org.apache.commons.lang3.tuple.Pair;
@@ -120,6 +124,10 @@ public class ApiServerCodeGenerator {
             propertyNameMap.put("Mapper", mapperPropertyName);
 
         };
+        List<ExtSysTableInfo> extSysTableInfos = List.of(
+                ExtSysTableInfo.build(ExtSysTableInfo.EXT_TYPE_NAME_SERVICE).dependencyPackages(ApiPage.class),
+                ExtSysTableInfo.build(ExtSysTableInfo.EXT_TYPE_NAME_SERVICE_IMPL).dependencyPackages(ApiPage.class, ApiUtils.class, JsonUtils.class, WrapperUtils.class)
+        );
         List<ExtTableInfo> extTableInfos = List.of(
                 ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_PO).fileName("Po.java").packageName("infrastructure.po").templatePath("/templates/apiserver/infrastructure/po.java.ftl").superClass(AbstractPo.class),
                 ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_API).fileName("Api.java").packageName("api").templatePath("/templates/apiserver/client/api.java.ftl").dependencyPackages(ApiResult.class, ApiPage.class, MultiValueMap.class, Pageable.class),
@@ -130,6 +138,9 @@ public class ApiServerCodeGenerator {
         InjectionConfig injectionConfig = new InjectionConfig.Builder()
                 .beforeOutputFile((TableInfo tableInfo, Map<String, Object> objectMap) -> {
                     propertyNamesConsumer.accept(Pair.of(tableInfo, objectMap));
+                    extSysTableInfos.forEach(extSysTableInfo -> {
+                        extSysTableInfo.injection(tableInfo, objectMap);
+                    });
                     extTableInfos.forEach(extTableInfo -> {
                         extTableInfo.injection(tableInfo, objectMap);
                     });

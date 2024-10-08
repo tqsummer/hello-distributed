@@ -7,11 +7,16 @@ import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import ${extPackage.ReqDto}.${extTable.reqDtoName};
 import ${extPackage.ResDto}.${extTable.resDtoName};
+<#if extImportPackages?? && extImportPackages.serviceImplImportPackages??>
+<#list extImportPackages.serviceImplImportPackages as pkg>
+import ${pkg};
+</#list>
+</#if>
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 
 import java.util.function.Function;

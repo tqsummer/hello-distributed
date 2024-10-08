@@ -2,8 +2,15 @@ package ${package.Service};
 
 import ${extPackage.Po}.${extTable.poName};
 import ${superServiceClassPackage};
+<#if extImportPackages?? && extImportPackages.serviceImportPackages??>
+<#list extImportPackages.serviceImportPackages as pkg>
+import ${pkg};
+</#list>
+</#if>
 import ${extPackage.ReqDto}.${extTable.reqDtoName};
 import ${extPackage.ResDto}.${extTable.resDtoName};
+import org.springframework.data.domain.Pageable;
+import org.springframework.util.MultiValueMap;
 
 /**
  * <p>
