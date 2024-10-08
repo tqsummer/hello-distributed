@@ -6,16 +6,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
-* <p>
-    * 会员表
-    * </p>
-*
-* @author fangxiagnqian
-* @since 2024-10-09
-*/
+ * <p>
+ * 会员表
+ * </p>
+ *
+ * @author fangxiagnqian
+ * @since 2024-10-09
+ */
 @Data
 public class MemberResDto extends AbstractResDto {
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
         /**
         * 会员ID

@@ -64,7 +64,7 @@ public class ApiServerCodeGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
-                .addInclude("t_member") // 添加您的表名
+                .addInclude("^t_.*") // 添加您的表名
                 .addTablePrefix("t_")
                 .entityBuilder()
                 .enableLombok()
@@ -134,7 +134,8 @@ public class ApiServerCodeGenerator {
                 ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_REQ_DTO).fileName("ReqDto.java").packageName("api.dto.req").templatePath("/templates/apiserver/client/reqdto.java.ftl").superClass(AbstractReqDto.class),
                 ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_RES_DTO).fileName("ResDto.java").packageName("api.dto.res").templatePath("/templates/apiserver/client/resdto.java.ftl").superClass(AbstractResDto.class)
         );
-        List<ExtTableField> extTableFields = List.of(ExtTableField.build("t_customer", "gender", ExtDbColumnType.Gender).addAnnotation(EnumValue.class, "@EnumValue"));
+        //List<ExtTableField> extTableFields = List.of(ExtTableField.build("t_customer", "gender", ExtDbColumnType.Gender).addAnnotation(EnumValue.class, "@EnumValue"));
+        List<ExtTableField> extTableFields = List.of();
         InjectionConfig injectionConfig = new InjectionConfig.Builder()
                 .beforeOutputFile((TableInfo tableInfo, Map<String, Object> objectMap) -> {
                     propertyNamesConsumer.accept(Pair.of(tableInfo, objectMap));

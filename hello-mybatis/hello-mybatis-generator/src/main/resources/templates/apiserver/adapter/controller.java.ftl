@@ -40,27 +40,27 @@ public class ${table.controllerName} implements ${extTable.apiName} {
 
     @GetMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
     public ApiResult<${extTable.resDtoName}> get${entity}ById(@PathVariable("id") Long id){
-        return ApiResult.ok(memberPoService.get(id));
+        return ApiResult.ok(${propertyNameMap.Service}.get(id));
     }
 
     @GetMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
     public ApiResult<ApiPage<${extTable.resDtoName}>> getPage${entity}(@RequestParam MultiValueMap<String, String> query, Pageable pageable){
-        return ApiResult.ok(memberPoService.getPage(query, pageable));
+        return ApiResult.ok(${propertyNameMap.Service}.getPage(query, pageable));
     }
 
     @PostMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
     public ApiResult<${extTable.resDtoName}> save${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
-        return ApiResult.ok(memberPoService.save(reqDto));
+        return ApiResult.ok(${propertyNameMap.Service}.save(reqDto));
     }
 
     @PutMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
     public ApiResult<${extTable.resDtoName}> put${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
-        return ApiResult.ok(memberPoService.updateAllProps(reqDto));
+        return ApiResult.ok(${propertyNameMap.Service}.updateAllProps(reqDto));
     }
 
     @DeleteMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
     public ApiResult<${extTable.resDtoName}> delete${entity}ById(@PathVariable("id") Long id){
-        return ApiResult.ok(memberPoService.delete(id));
+        return ApiResult.ok(${propertyNameMap.Service}.delete(id));
     }
 }
 </#if>

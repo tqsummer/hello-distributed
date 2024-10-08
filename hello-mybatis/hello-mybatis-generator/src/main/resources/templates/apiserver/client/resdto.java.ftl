@@ -9,20 +9,20 @@ import ${pkg};
 </#list>
 
 /**
-* <p>
-    * ${table.comment!}
-    * </p>
-*
-* @author ${author}
-* @since ${date}
-*/
+ * <p>
+ * ${table.comment!}
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
 @Data
 <#if extTable.superResDtoClass??>
 public class ${extTable.resDtoName} extends ${extTable.superResDtoClass} {
 <#else>
 public class ${extTable.resDtoName} {
 </#if>
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 <#-- ----------  BEGIN 字段循环遍历  ---------->
 <#list table.commonFields as field>

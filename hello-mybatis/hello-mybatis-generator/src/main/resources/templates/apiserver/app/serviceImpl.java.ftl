@@ -58,7 +58,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public ApiPage<${extTable.resDtoName}> getPage(MultiValueMap<String, String> query, Pageable pageable) {
         Page<${extTable.poName}> page = WrapperUtils.toPage(pageable);
         IPage<${extTable.poName}> iPage = ${propertyNameMap.Mapper}.selectPage(page, null);
-        Function<${extTable.poName}, MemberResDto> function = po -> JsonUtils.convertValue(po, ${extTable.resDtoName}.class);
+        Function<${extTable.poName}, ${extTable.resDtoName}> function = po -> JsonUtils.convertValue(po, ${extTable.resDtoName}.class);
         return ApiPage.to(iPage, function);
     }
 
