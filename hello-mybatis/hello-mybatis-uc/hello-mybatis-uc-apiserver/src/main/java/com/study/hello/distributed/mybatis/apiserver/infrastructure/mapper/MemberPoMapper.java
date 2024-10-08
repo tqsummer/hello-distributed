@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author fangxiagnqian
- * @since 2024-10-08
+ * @since 2024-10-09
  */
 @Mapper
 public interface MemberPoMapper extends AbstractMapper<MemberPo> {

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
     * </p>
 *
 * @author fangxiagnqian
-* @since 2024-10-08
+* @since 2024-10-09
 */
 @Data
 public class MemberResDto extends AbstractResDto {

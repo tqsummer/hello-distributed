@@ -2,6 +2,7 @@ package ${package.Controller};
 
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 <#if !restControllerStyle>
 import org.springframework.stereotype.Controller;
 </#if>
