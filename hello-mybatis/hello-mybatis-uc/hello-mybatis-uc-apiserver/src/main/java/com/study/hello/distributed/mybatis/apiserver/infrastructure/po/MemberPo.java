@@ -1,25 +1,30 @@
-package com.study.hello.distributed.mybatis.apiserver.entity;
+package com.study.hello.distributed.mybatis.apiserver.infrastructure.po;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.po.AbstractPo;
-import lombok.Data;
-
-import java.io.Serializable;
 import java.time.LocalDate;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
+ * <p>
  * 会员表
+ * </p>
  *
- * @TableName t_member
+ * @author fangxiagnqian
+ * @since 2024-10-08
  */
-@TableName(value = "t_member")
-@Data
-public class MemberPo extends AbstractPo implements Serializable {
+@Getter
+@Setter
+@TableName("t_member")
+public class MemberPo extends AbstractPo {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * 昵称
      */
-    @TableField(value = "nick_name")
     private String nickName;
 
     /**
@@ -51,6 +56,4 @@ public class MemberPo extends AbstractPo implements Serializable {
      * 会员状态
      */
     private String status;
-
-
 }

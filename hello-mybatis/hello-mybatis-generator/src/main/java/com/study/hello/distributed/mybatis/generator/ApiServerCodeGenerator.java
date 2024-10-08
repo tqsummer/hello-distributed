@@ -44,7 +44,7 @@ public class ApiServerCodeGenerator {
 
         // 包配置
         PackageConfig packageConfig = new PackageConfig.Builder()
-                .parent("com.study.hello.distributed.mybatis.uc.apiserver")
+                .parent("com.study.hello.distributed.mybatis.apiserver")
                 .entity("infrastructure.entity")
                 .mapper("infrastructure.mapper")
                 .xml("mapper")
@@ -56,7 +56,7 @@ public class ApiServerCodeGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig.Builder()
-                .addInclude("^t_.*") // 添加您的表名
+                .addInclude("t_member") // 添加您的表名
                 .addTablePrefix("t_")
                 .entityBuilder()
                 .enableLombok()
@@ -100,6 +100,11 @@ public class ApiServerCodeGenerator {
                         extTableInfo.injection(tableInfo, objectMap);
                     });
                     tableInfo.getFields().forEach(tableField -> extTableFields.forEach(extTableField -> extTableField.injection(tableInfo, objectMap, tableField)));
+
+                    Set<String> allFieldImportPackages = tableInfo.getFields().stream().filter(tableField -> tableField.getColumnType() != null && tableField.getColumnType().getPkg() != null).map(tableField -> tableField.getColumnType().getPkg()).collect(Collectors.toCollection(TreeSet::new));
+                    allFieldImportPackages.addAll(tableInfo.getCommonFields().stream().filter(tableField -> tableField.getColumnType() != null && tableField.getColumnType().getPkg() != null).map(tableField -> tableField.getColumnType().getPkg()).collect(Collectors.toSet()));
+                    objectMap.put("allFieldImportPackages", allFieldImportPackages);
+
                     System.out.println("TableInfo: " + tableInfo.getName());
                     System.out.println("ObjectMap: " + objectMap);
 

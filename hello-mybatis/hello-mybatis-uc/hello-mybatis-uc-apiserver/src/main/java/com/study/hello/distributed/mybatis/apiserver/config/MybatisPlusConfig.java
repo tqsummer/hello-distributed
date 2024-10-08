@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.study.hello.distributed.mybatis.apiserver.mapper")
+@MapperScan("com.study.hello.distributed.mybatis.apiserver.infrastructure.mapper")
 public class MybatisPlusConfig {
 
     @Bean

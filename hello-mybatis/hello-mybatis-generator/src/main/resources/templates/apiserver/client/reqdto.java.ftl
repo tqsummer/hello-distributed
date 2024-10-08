@@ -4,16 +4,8 @@ import lombok.Data;
 <#if extTable.superReqDtoClassPackage??>
 import ${extTable.superReqDtoClassPackage};
 </#if>
-<#list table.importPackages as pkg>
-    <#--noinspection FtlLanguageInspection-->
-    <#if !pkg?starts_with("com.baomidou.mybatisplus") &&
-    !pkg?contains("TableName") &&
-    !pkg?contains("TableField") &&
-    !pkg?contains("TableId") &&
-    !pkg?starts_with("java.sql") &&
-    !pkg?starts_with("com.study.hello.distributed.mybatis.framework")>
+<#list allFieldImportPackages as pkg>
 import ${pkg};
-    </#if>
 </#list>
 
 /**

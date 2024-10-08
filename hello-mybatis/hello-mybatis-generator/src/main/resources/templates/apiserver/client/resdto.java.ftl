@@ -2,18 +2,10 @@ package ${extPackage.ResDto};
 
 import lombok.Data;
 <#if extTable.superResDtoClassPackage??>
-    import ${extTable.superResDtoClassPackage};
+import ${extTable.superResDtoClassPackage};
 </#if>
-<#list table.importPackages as pkg>
-<#--noinspection FtlLanguageInspection-->
-    <#if !pkg?starts_with("com.baomidou.mybatisplus") &&
-    !pkg?contains("TableName") &&
-    !pkg?contains("TableField") &&
-    !pkg?contains("TableId") &&
-    !pkg?starts_with("java.sql") &&
-    !pkg?starts_with("com.study.hello.distributed.mybatis.framework")>
-        import ${pkg};
-    </#if>
+<#list allFieldImportPackages as pkg>
+import ${pkg};
 </#list>
 
 /**

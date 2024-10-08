@@ -1,8 +1,14 @@
 package ${extPackage.Po};
 
 <#list table.importPackages as pkg>
+<#--noinspection FtlLanguageInspection-->
+    <#if
+    !pkg?contains("Serializable")
+    >
 import ${pkg};
+    </#if>
 </#list>
+
 <#if fieldAnnotationImportPackages??>
 <#list fieldAnnotationImportPackages as pkg>
 import ${pkg};

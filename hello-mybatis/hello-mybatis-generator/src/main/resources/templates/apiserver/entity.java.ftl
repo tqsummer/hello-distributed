@@ -1,7 +1,12 @@
 package ${package.Entity};
 
 <#list table.importPackages as pkg>
+<#--noinspection FtlLanguageInspection-->
+    <#if
+    !pkg?contains("Serializable")
+    >
 import ${pkg};
+    </#if>
 </#list>
 <#if springdoc>
 import io.swagger.v3.oas.annotations.media.Schema;

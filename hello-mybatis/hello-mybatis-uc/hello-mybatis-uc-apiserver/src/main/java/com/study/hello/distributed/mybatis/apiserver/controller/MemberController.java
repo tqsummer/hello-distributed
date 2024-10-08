@@ -1,20 +1,17 @@
 package com.study.hello.distributed.mybatis.apiserver.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.study.hello.distributed.mybatis.apiserver.entity.MemberPo;
-import com.study.hello.distributed.mybatis.apiserver.mapper.MemberMapper;
+
+import com.study.hello.distributed.mybatis.apiserver.api.MemberApi;
+import com.study.hello.distributed.mybatis.apiserver.api.dto.req.MemberReqDto;
+import com.study.hello.distributed.mybatis.apiserver.api.dto.res.MemberResDto;
+import com.study.hello.distributed.mybatis.apiserver.infrastructure.service.IMemberPoService;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiResult;
-import com.study.hello.distributed.mybatis.framework.core.mybatis.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 /**
  * <p>
@@ -22,20 +19,36 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author fangxiagnqian
- * @since 2024-10-02
+ * @since 2024-10-08
  */
 @RestController
-@RequestMapping("/member")
-public class MemberController {
-    @Autowired
-    private MemberMapper memberMapper;
+public class MemberController implements MemberApi {
 
-    @GetMapping(value = "/v1/member", produces = MediaType.APPLICATION_JSON_VALUE)
-    ApiResult<ApiPage<MemberPo>> getMember(@RequestParam MultiValueMap<String, String> query, Pageable pageable) {
-        Page<MemberPo> page = WrapperUtils.toPage(pageable);
-        IPage<MemberPo> iPage = memberMapper.selectPage(page, null);
-        ApiPage<MemberPo> apiPage = ApiPage.to(iPage);
-        return ApiResult.ok(apiPage);
+    @Autowired
+    private IMemberPoService memberPoService;
+
+    @GetMapping("/v1/member/{id}")
+    public ApiResult<MemberResDto> getMemberById(@PathVariable("id") Long id) {
+        return ApiResult.ok(memberPoService.get(id));
     }
 
+    @GetMapping("/v1/member")
+    public ApiResult<ApiPage<MemberResDto>> getPageMember(@RequestParam MultiValueMap<String, String> query, Pageable pageable) {
+        return ApiResult.ok(memberPoService.getPage(query, pageable));
+    }
+
+    @PostMapping("/v1/member")
+    public ApiResult<MemberResDto> saveMember(@RequestBody MemberReqDto reqDto) {
+        return ApiResult.ok(memberPoService.save(reqDto));
+    }
+
+    @PutMapping("/v1/member")
+    public ApiResult<MemberResDto> putMember(@RequestBody MemberReqDto reqDto) {
+        return ApiResult.ok(memberPoService.updateAllProps(reqDto));
+    }
+
+    @DeleteMapping("/v1/member/{id}")
+    public ApiResult<MemberResDto> deleteMemberById(@PathVariable("id") Long id) {
+        return ApiResult.ok(memberPoService.delete(id));
+    }
 }

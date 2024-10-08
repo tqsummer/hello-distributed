@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.study.hello.distributed.mybatis.apiserver.entity.MemberPo;
-import com.study.hello.distributed.mybatis.apiserver.mapper.MemberMapper;
+import com.study.hello.distributed.mybatis.apiserver.infrastructure.mapper.MemberPoMapper;
+import com.study.hello.distributed.mybatis.apiserver.infrastructure.po.MemberPo;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
 import com.study.hello.distributed.mybatis.framework.commons.util.JsonUtils;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @ActiveProfiles("test")
 public class MemberMapperTest {
     @Autowired
-    private MemberMapper memberMapper;
+    private MemberPoMapper memberMapper;
 
     @Test
     public void testInsert() {
@@ -48,7 +48,7 @@ public class MemberMapperTest {
     public void testUpdate() {
         MemberPo memberPo = memberMapper.selectById(1841131233602347010L);
         memberPo.setNickName("test3");
-        memberPo.setCreateUserName("系统10");
+        memberPo.setCreateUserName("系统13");
         memberPo.setModifyUserName("系统3");
         memberMapper.updateById(memberPo);
     }
