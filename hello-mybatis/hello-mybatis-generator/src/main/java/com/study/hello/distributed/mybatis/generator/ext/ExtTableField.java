@@ -69,6 +69,7 @@ public class ExtTableField {
 
         // 添加导入包
         tableInfo.getImportPackages().add(this.columnType.getPkg());
+        tableField.setPropertyName(tableField.getPropertyName(), this.columnType);
 
         // 添加注解包
         //noinspection unchecked
@@ -82,7 +83,7 @@ public class ExtTableField {
             customMap = new HashMap<>();
             tableField.setCustomMap(customMap);
         }
-        
+
         // 添加注解值
         //noinspection unchecked
         Set<String> fieldAnnotationValues = (Set<String>) customMap.get(FIELD_ANNOTATION_VALUES);
