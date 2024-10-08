@@ -3,22 +3,26 @@ package com.study.hello.distributed.mybatis.generator;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiResult;
 import com.study.hello.distributed.mybatis.framework.commons.api.dto.AbstractReqDto;
 import com.study.hello.distributed.mybatis.framework.commons.api.dto.AbstractResDto;
+import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.mapper.AbstractMapper;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.po.AbstractPo;
+import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.service.IPoService;
+import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.service.PoServiceImpl;
 import com.study.hello.distributed.mybatis.generator.ext.ExtDbColumnType;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableField;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableInfo;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ApiServerCodeGenerator {
@@ -68,11 +72,14 @@ public class ApiServerCodeGenerator {
                 .enableHyphenStyle()
                 .enableRestStyle()
                 .mapperBuilder()
-                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+                .mapperAnnotation(Mapper.class)
+                .superClass(AbstractMapper.class)
                 .formatMapperFileName("%sPoMapper")
                 .formatXmlFileName("%sPoMapper")
                 .serviceBuilder()
+                .superServiceClass(IPoService.class)
                 .formatServiceFileName("I%sPoService")
+                .superServiceImplClass(PoServiceImpl.class)
                 .formatServiceImplFileName("%sPoServiceImpl")
                 .build(); // 调用 build() 方法创建 StrategyConfig 对象
 
@@ -87,6 +94,32 @@ public class ApiServerCodeGenerator {
                 .build();
 
         // 注入配置
+        Consumer<Pair<TableInfo, Map<String, Object>>> propertyNamesConsumer = (pair) -> {
+            TableInfo tableInfo = pair.getLeft();
+            Map<String, Object> objectMap = pair.getRight();
+
+            String entityName = tableInfo.getEntityName();
+            String entityPropertyName = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+            String serviceName = tableInfo.getServiceImplName();
+            String servicePropertyName = serviceName.substring(0, 1).toLowerCase() + serviceName.substring(1);
+            servicePropertyName = servicePropertyName.replace("Impl", "");
+            String controllerName = tableInfo.getControllerName();
+            String controllerPropertyName = controllerName.substring(0, 1).toLowerCase() + controllerName.substring(1);
+            String mapperName = tableInfo.getMapperName();
+            String mapperPropertyName = mapperName.substring(0, 1).toLowerCase() + mapperName.substring(1);
+
+            //noinspection unchecked
+            Map<String, String> propertyNameMap = (Map<String, String>) objectMap.get(ExtTableInfo.EXT_PROPERTY_NAME_MAP_KEY);
+            if (propertyNameMap == null) {
+                propertyNameMap = new HashMap<>();
+                objectMap.put(ExtTableInfo.EXT_PROPERTY_NAME_MAP_KEY, propertyNameMap);
+            }
+            propertyNameMap.put("Entity", entityPropertyName);
+            propertyNameMap.put("Service", servicePropertyName);
+            propertyNameMap.put("Controller", controllerPropertyName);
+            propertyNameMap.put("Mapper", mapperPropertyName);
+
+        };
         List<ExtTableInfo> extTableInfos = List.of(
                 ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_PO).fileName("Po.java").packageName("infrastructure.po").templatePath("/templates/apiserver/infrastructure/po.java.ftl").superClass(AbstractPo.class),
                 ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_API).fileName("Api.java").packageName("api").templatePath("/templates/apiserver/client/api.java.ftl").dependencyPackages(ApiResult.class, ApiPage.class, MultiValueMap.class, Pageable.class),
@@ -96,6 +129,7 @@ public class ApiServerCodeGenerator {
         List<ExtTableField> extTableFields = List.of(ExtTableField.build("t_customer", "gender", ExtDbColumnType.Gender).addAnnotation(EnumValue.class, "@EnumValue"));
         InjectionConfig injectionConfig = new InjectionConfig.Builder()
                 .beforeOutputFile((TableInfo tableInfo, Map<String, Object> objectMap) -> {
+                    propertyNamesConsumer.accept(Pair.of(tableInfo, objectMap));
                     extTableInfos.forEach(extTableInfo -> {
                         extTableInfo.injection(tableInfo, objectMap);
                     });

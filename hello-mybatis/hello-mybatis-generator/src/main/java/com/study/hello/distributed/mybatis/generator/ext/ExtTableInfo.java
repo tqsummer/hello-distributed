@@ -14,12 +14,13 @@ public class ExtTableInfo {
 
     public static final String EXT_IMPORT_PACKAGES_NAME_KEY = "extImportPackages";
     public static final String EXT_TYPE_IMPORT_PACKAGES_NAME_KEY = "ImportPackages";
-    private String extTypeName;
+    public static final String EXT_PROPERTY_NAME_MAP_KEY = "propertyNameMap";
+    private final String extTypeName;
     private String packageName;
     private String fileName;
     private String templatePath;
     private Class<?> superClass;
-    private List<Class<?>> dependencyPackages;
+    private final List<Class<?>> dependencyPackages;
 
     private ExtTableInfo(String extTypeName) {
         this.extTypeName = extTypeName;
@@ -101,6 +102,17 @@ public class ExtTableInfo {
             objectMap.put("extTable", extTable);
         }
         extTable.put(extTypeName + "Name", tableInfo.getEntityName() + camelExtTypeName);
+        String extTypePropertyName = tableInfo.getEntityName().substring(0, 1).toLowerCase() + tableInfo.getEntityName().substring(1) + camelExtTypeName;
+        extTable.put(extTypeName + "PropertyName", extTypePropertyName);
+
+        //noinspection unchecked
+        Map<String, String> propertyNameMap = (Map<String, String>) objectMap.get(ExtTableInfo.EXT_PROPERTY_NAME_MAP_KEY);
+        if (propertyNameMap == null) {
+            propertyNameMap = new HashMap<>();
+            objectMap.put(ExtTableInfo.EXT_PROPERTY_NAME_MAP_KEY, propertyNameMap);
+        }
+        propertyNameMap.put(camelExtTypeName, extTypePropertyName);
+
         if (Objects.nonNull(superClass)) {
             extTable.put("super" + camelExtTypeName + "Class", superClass.getSimpleName());
             extTable.put("super" + camelExtTypeName + "ClassPackage", superClass.getName());

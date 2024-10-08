@@ -1,7 +1,7 @@
 package com.study.hello.distributed.mybatis.apiserver.infrastructure.mapper;
 
 import com.study.hello.distributed.mybatis.apiserver.infrastructure.po.MemberPo;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.mapper.AbstractMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,6 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2024-10-08
  */
 @Mapper
-public interface MemberPoMapper extends BaseMapper<MemberPo> {
+public interface MemberPoMapper extends AbstractMapper<MemberPo> {
 
 }

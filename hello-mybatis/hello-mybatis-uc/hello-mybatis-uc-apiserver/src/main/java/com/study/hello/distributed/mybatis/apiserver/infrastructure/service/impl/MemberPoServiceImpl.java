@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.study.hello.distributed.mybatis.apiserver.api.dto.req.MemberReqDto;
 import com.study.hello.distributed.mybatis.apiserver.api.dto.res.MemberResDto;
-import com.study.hello.distributed.mybatis.apiserver.infrastructure.po.MemberPo;
 import com.study.hello.distributed.mybatis.apiserver.infrastructure.mapper.MemberPoMapper;
+import com.study.hello.distributed.mybatis.apiserver.infrastructure.po.MemberPo;
 import com.study.hello.distributed.mybatis.apiserver.infrastructure.service.IMemberPoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
 import com.study.hello.distributed.mybatis.framework.commons.util.ApiUtils;
 import com.study.hello.distributed.mybatis.framework.commons.util.JsonUtils;
+import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.service.PoServiceImpl;
 import com.study.hello.distributed.mybatis.framework.core.mybatis.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -29,8 +29,7 @@ import java.util.function.Function;
  * @since 2024-10-08
  */
 @Service
-public class MemberPoServiceImpl extends ServiceImpl<MemberPoMapper, MemberPo> implements IMemberPoService {
-
+public class MemberPoServiceImpl extends PoServiceImpl<MemberPoMapper, MemberPo> implements IMemberPoService {
     @Autowired
     private MemberPoMapper memberPoMapper;
 
@@ -61,10 +60,7 @@ public class MemberPoServiceImpl extends ServiceImpl<MemberPoMapper, MemberPo> i
     @Transactional(rollbackFor = Exception.class)
     public MemberResDto updateAllProps(MemberReqDto reqDto) {
         ApiUtils.notNull(reqDto.getId());
-        MemberPo updatePo = memberPoMapper.selectById(reqDto.getId());
-        //MemberPo updatePo = JsonUtils.convertValue(reqDto, MemberPo.class);
-        updatePo.setNickName(reqDto.getNickName());
-        updatePo.setVersion(1);
+        MemberPo updatePo = JsonUtils.convertValue(reqDto, MemberPo.class);
         memberPoMapper.updateById(updatePo);
         return JsonUtils.convertValue(updatePo, MemberResDto.class);
     }

@@ -13,7 +13,7 @@ import ${apiImportPackage};
 import ${extPackage.Api}.${extTable.apiName};
 import ${extPackage.ReqDto}.${extTable.reqDtoName};
 import ${extPackage.ResDto}.${extTable.resDtoName};
-
+import ${package.Service}.${table.serviceName};
 
 
 /**
@@ -34,29 +34,32 @@ class ${table.controllerName} : ${extTable.apiName}()
 <#else>
 public class ${table.controllerName} implements ${extTable.apiName} {
 
+    @Autowired
+    private ${table.serviceName} ${propertyNameMap.Service};
+
     @GetMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
     public ApiResult<${extTable.resDtoName}> get${entity}ById(@PathVariable("id") Long id){
-        return null;
+        return ApiResult.ok(memberPoService.get(id));
     }
 
     @GetMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
     public ApiResult<ApiPage<${extTable.resDtoName}>> getPage${entity}(@RequestParam MultiValueMap<String, String> query, Pageable pageable){
-        return null;
+        return ApiResult.ok(memberPoService.getPage(query, pageable));
     }
 
     @PostMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-    public ApiResult<ApiPage<${extTable.resDtoName}>> save${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
-        return null;
+    public ApiResult<${extTable.resDtoName}> save${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
+        return ApiResult.ok(memberPoService.save(reqDto));
     }
 
     @PutMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-    public ApiResult<ApiPage<${extTable.resDtoName}>> put${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
-        return null;
+    public ApiResult<${extTable.resDtoName}> put${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
+        return ApiResult.ok(memberPoService.updateAllProps(reqDto));
     }
 
     @DeleteMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
-    public ApiResult<ApiPage<${extTable.resDtoName}>> delete${entity}ById(@PathVariable("id") Long id){
-        return null;
+    public ApiResult<${extTable.resDtoName}> delete${entity}ById(@PathVariable("id") Long id){
+        return ApiResult.ok(memberPoService.delete(id));
     }
 }
 </#if>
