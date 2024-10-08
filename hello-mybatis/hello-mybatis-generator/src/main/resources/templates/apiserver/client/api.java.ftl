@@ -1,26 +1,28 @@
-package ${package.Parent}.client.api;
+package $${extPackage.Api};
 
-import ${package.Entity}.${entity};
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+<#if extImportPackages?? && extImportPackages.apiImportPackages??>
+<#list extImportPackages.apiImportPackages as apiImportPackage>
+import ${apiImportPackage};
+</#list>
+</#if>
+import ${extPackage.ReqDto}.${extTable.reqDtoName};
+import ${extPackage.ResDto}.${extTable.resDtoName};
 
-import java.util.List;
-
-@FeignClient(name = "<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>-service")
-public interface ${entity}Api {
+public interface ${extTable.apiName} {
 
     @GetMapping("<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
-    ${entity} getById(@PathVariable("id") Long id);
+    ApiResult<${extTable.resDtoName}> get${entity}ById(@PathVariable("id") Long id);
 
     @GetMapping("<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-    List<${entity}> list();
+    ApiResult<ApiPage<${extTable.resDtoName}>> getPage${entity}(@RequestParam MultiValueMap<String, String> query, Pageable pageable);
 
     @PostMapping("<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-    boolean save(@RequestBody ${entity} ${table.entityPath});
+    ApiResult<ApiPage<${extTable.resDtoName}>> save${entity}(@RequestBody ${extTable.reqDtoName} reqDto);
 
     @PutMapping("<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-    boolean update(@RequestBody ${entity} ${table.entityPath});
+    ApiResult<ApiPage<${extTable.resDtoName}>> put${entity}(@RequestBody ${extTable.reqDtoName} reqDto);
 
     @DeleteMapping("<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
-    boolean removeById(@PathVariable("id") Long id);
+    ApiResult<ApiPage<${extTable.resDtoName}>> delete${entity}ById(@PathVariable("id") Long id);
 }

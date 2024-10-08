@@ -3,20 +3,27 @@ package com.study.hello.distributed.mybatis.generator.ext;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExtTableInfo {
     public static final String EXT_TYPE_NAME_PO = "po";
+    public static final String EXT_TYPE_NAME_API = "api";
+    public static final String EXT_TYPE_NAME_REQ_DTO = "reqDto";
+    public static final String EXT_TYPE_NAME_RES_DTO = "resDto";
+
+    public static final String EXT_IMPORT_PACKAGES_NAME_KEY = "extImportPackages";
+    public static final String EXT_TYPE_IMPORT_PACKAGES_NAME_KEY = "ImportPackages";
     private String extTypeName;
     private String packageName;
     private String fileName;
     private String templatePath;
     private Class<?> superClass;
+    private List<Class<?>> dependencyPackages;
 
     private ExtTableInfo(String extTypeName) {
         this.extTypeName = extTypeName;
+        this.dependencyPackages = new ArrayList<>();
     }
 
     public static ExtTableInfo build(String extTypeName) {
@@ -44,6 +51,11 @@ public class ExtTableInfo {
         return this;
     }
 
+    public ExtTableInfo dependencyPackages(Class<?>... dependencyPackages) {
+        this.dependencyPackages.addAll(Arrays.asList(dependencyPackages));
+        return this;
+    }
+
     public String getExtTypeName() {
         return extTypeName;
     }
@@ -62,6 +74,10 @@ public class ExtTableInfo {
 
     public Class<?> getSuperClass() {
         return superClass;
+    }
+
+    public List<Class<?>> getDependencyPackages() {
+        return dependencyPackages;
     }
 
     public void injection(TableInfo tableInfo, Map<String, Object> objectMap) {
@@ -90,6 +106,17 @@ public class ExtTableInfo {
             extTable.put("super" + camelExtTypeName + "ClassPackage", superClass.getName());
 
         }
+
+
+        String extTypeImportPackagesNameKey = extTypeName + EXT_TYPE_IMPORT_PACKAGES_NAME_KEY;
+        //noinspection unchecked
+        Map<String, Set<String>> extImportPackages = (Map<String, Set<String>>) objectMap.get(EXT_IMPORT_PACKAGES_NAME_KEY);
+        if (Objects.isNull(extImportPackages)) {
+            extImportPackages = new LinkedHashMap<>();
+            objectMap.put(EXT_IMPORT_PACKAGES_NAME_KEY, extImportPackages);
+        }
+        extImportPackages.put(extTypeImportPackagesNameKey, dependencyPackages.stream().map(Class::getName).collect(Collectors.toSet()));
+
     }
 
     public CustomFile getCustomFile() {

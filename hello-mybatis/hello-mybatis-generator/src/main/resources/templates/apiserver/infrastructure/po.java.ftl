@@ -45,7 +45,7 @@ import lombok.experimental.Accessors;
 <#elseif swagger>
 @ApiModel(value = "${extTable.poName}对象", description = "${table.comment!}")
 </#if>
-<#if superEntityClass??>
+<#if extTable.superPoClass??>
 public class ${extTable.poName} extends ${extTable.superPoClass}<#if activeRecord><${extTable.poName}></#if> {
 <#elseif activeRecord>
 public class ${extTable.poName} extends Model<${extTable.poName}> {

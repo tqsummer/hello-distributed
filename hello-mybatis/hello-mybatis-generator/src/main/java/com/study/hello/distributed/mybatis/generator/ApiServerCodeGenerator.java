@@ -7,10 +7,16 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.study.hello.distributed.mybatis.framework.commons.api.ApiPage;
+import com.study.hello.distributed.mybatis.framework.commons.api.ApiResult;
+import com.study.hello.distributed.mybatis.framework.commons.api.dto.AbstractReqDto;
+import com.study.hello.distributed.mybatis.framework.commons.api.dto.AbstractResDto;
 import com.study.hello.distributed.mybatis.framework.core.ddd.infrastructure.persistence.po.AbstractPo;
 import com.study.hello.distributed.mybatis.generator.ext.ExtDbColumnType;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableField;
 import com.study.hello.distributed.mybatis.generator.ext.ExtTableInfo;
+import org.springframework.data.domain.Pageable;
+import org.springframework.util.MultiValueMap;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +50,7 @@ public class ApiServerCodeGenerator {
                 .xml("mapper")
                 .service("infrastructure.service")
                 .serviceImpl("infrastructure.service.impl")
-                .controller("adapter.web")
+                .controller("controller")
                 .pathInfo(Collections.singletonMap(OutputFile.xml, mapperOutputDir))
                 .build();
 
@@ -81,7 +87,12 @@ public class ApiServerCodeGenerator {
                 .build();
 
         // 注入配置
-        List<ExtTableInfo> extTableInfos = List.of(ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_PO).fileName("Po.java").packageName("infrastructure.po").templatePath("/templates/apiserver/infrastructure/po.java.ftl").superClass(AbstractPo.class));
+        List<ExtTableInfo> extTableInfos = List.of(
+                ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_PO).fileName("Po.java").packageName("infrastructure.po").templatePath("/templates/apiserver/infrastructure/po.java.ftl").superClass(AbstractPo.class),
+                ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_API).fileName("Api.java").packageName("api").templatePath("/templates/apiserver/client/api.java.ftl").dependencyPackages(ApiResult.class, ApiPage.class, MultiValueMap.class, Pageable.class),
+                ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_REQ_DTO).fileName("ReqDto.java").packageName("api.dto.req").templatePath("/templates/apiserver/client/reqdto.java.ftl").superClass(AbstractReqDto.class),
+                ExtTableInfo.build(ExtTableInfo.EXT_TYPE_NAME_RES_DTO).fileName("ResDto.java").packageName("api.dto.res").templatePath("/templates/apiserver/client/resdto.java.ftl").superClass(AbstractResDto.class)
+        );
         List<ExtTableField> extTableFields = List.of(ExtTableField.build("t_customer", "gender", ExtDbColumnType.Gender).addAnnotation(EnumValue.class, "@EnumValue"));
         InjectionConfig injectionConfig = new InjectionConfig.Builder()
                 .beforeOutputFile((TableInfo tableInfo, Map<String, Object> objectMap) -> {
@@ -94,8 +105,8 @@ public class ApiServerCodeGenerator {
 
                 })
                 .customFile(extTableInfos.stream().map(ExtTableInfo::getCustomFile).toList())
-                .customFile(new CustomFile.Builder().packageName("client.api").fileName("Api.java").templatePath("/templates/apiserver/client/api.java.ftl").build())
-                .customFile(new CustomFile.Builder().packageName("client.dto").fileName("DTO.java").templatePath("/templates/apiserver/client/dto.java.ftl").build())
+                //.customFile(new CustomFile.Builder().packageName("api").fileName("Api.java").templatePath("/templates/apiserver/client/api.java.ftl").build())
+                //.customFile(new CustomFile.Builder().packageName("api.dto").fileName("DTO.java").templatePath("/templates/apiserver/client/dto.java.ftl").build())
                 //.customFile(new CustomFile.Builder().packageName("infrastructure.repository").fileName("Repository.java").templatePath("/templates/apiserver/infrastructure/repository.java.ftl").build())
                 .build();
 
