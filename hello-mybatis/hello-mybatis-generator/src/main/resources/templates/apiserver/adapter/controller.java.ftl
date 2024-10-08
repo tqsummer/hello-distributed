@@ -1,14 +1,20 @@
 package ${package.Controller};
 
-import org.springframework.web.bind.annotation.RequestMapping;
-<#if restControllerStyle>
-import org.springframework.web.bind.annotation.RestController;
-<#else>
+
+import org.springframework.web.bind.annotation.*;
+<#if !restControllerStyle>
 import org.springframework.stereotype.Controller;
 </#if>
-<#if superControllerClassPackage??>
-import ${superControllerClassPackage};
+<#if extImportPackages?? && extImportPackages.apiImportPackages??>
+<#list extImportPackages.apiImportPackages as apiImportPackage>
+import ${apiImportPackage};
+</#list>
 </#if>
+import ${extPackage.Api}.${extTable.apiName};
+import ${extPackage.ReqDto}.${extTable.reqDtoName};
+import ${extPackage.ResDto}.${extTable.resDtoName};
+
+
 
 /**
  * <p>
@@ -23,15 +29,34 @@ import ${superControllerClassPackage};
 <#else>
 @Controller
 </#if>
-@RequestMapping("<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
 <#if kotlin>
-class ${table.controllerName}<#if superControllerClass??> : ${superControllerClass}()</#if>
+class ${table.controllerName} : ${extTable.apiName}()
 <#else>
-<#if superControllerClass??>
-public class ${table.controllerName} extends ${superControllerClass} {
-<#else>
-public class ${table.controllerName} {
-</#if>
+public class ${table.controllerName} implements ${extTable.apiName} {
 
+    @GetMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
+    ApiResult<${extTable.resDtoName}> get${entity}ById(@PathVariable("id") Long id){
+        return null;
+    }
+
+    @GetMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
+    ApiResult<ApiPage<${extTable.resDtoName}>> getPage${entity}(@RequestParam MultiValueMap<String, String> query, Pageable pageable){
+        return null;
+    }
+
+    @PostMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
+    ApiResult<ApiPage<${extTable.resDtoName}>> save${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
+        return null;
+    }
+
+    @PutMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
+    ApiResult<ApiPage<${extTable.resDtoName}>> put${entity}(@RequestBody ${extTable.reqDtoName} reqDto){
+        return null;
+    }
+
+    @DeleteMapping("/v1<#if package.ModuleName?? && package.ModuleName != "">/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle>${controllerMappingHyphen}<#else>${table.entityPath}</#if>/{id}")
+    ApiResult<ApiPage<${extTable.resDtoName}>> delete${entity}ById(@PathVariable("id") Long id){
+        return null;
+    }
 }
 </#if>
